@@ -1,0 +1,121 @@
+Problem
+
+A sequence is an ordered collection of objects (usually numbers), which are allowed to repeat. Sequences can be finite or infinite. Two examples are the finite sequence (π,−2–√,0,π)
+and the infinite sequence of odd numbers (1,3,5,7,9,…). We use the notation an to represent the n-th term of a sequence.
+
+A recurrence relation is a way of defining the terms of a sequence with respect to the values of previous terms. In the case of Fibonacci's rabbits from the introduction, any given month will contain the rabbits that were alive the previous month, plus any new offspring. A key observation is that the number of offspring in any month is equal to the number of rabbits that were alive two months prior. As a result, if Fn
+represents the number of rabbit pairs alive after the n-th month, then we obtain the Fibonacci sequence having terms Fn that are defined by the recurrence relation Fn=Fn−1+Fn−2 (with F1=F2=1
+
+to initiate the sequence). Although the sequence bears Fibonacci's name, it was known to Indian mathematicians over two millennia ago.
+
+When finding the n-th term of a sequence defined by a recurrence relation, we can simply use the recurrence relation to generate terms for progressively larger values of n. This problem introduces us to the computational technique of dynamic programming, which successively builds up solutions by using the answers to smaller cases.
+
+Given: Positive integers n≤40
+and k≤5
+
+.
+
+Return: The total number of rabbit pairs that will be present after n
+months, if we begin with 1 pair and in each generation, every pair of reproduction-age rabbits produces a litter of k
+
+rabbit pairs (instead of only 1 pair).
+Sample Dataset
+
+5 3
+
+Sample Output
+
+19
+
+###################### SOLUTION ######################
+
+Algorithm idea
+
+Let Fn
+be the number of rabbits in the nth generation. We have F1=F2=1
+
+by the problem definition.
+
+The total pairs of rabbit at any given month is the sum of rabbits from the previous generation and their offspring. Any pair of rabbits that were alive two generations ago will reproduce and make k rabbit babies. Furthermore, these pairs are the only source new rabbits for this generation. Since any pair of rabbits alive in the previous generation are still alive this generation, we get the recurrence Fn=Fn−1+k⋅Fn−2
+
+.
+Pseudo code
+
+This idea can be implemented in Python:
+
+def fib(n, k):
+    previous1, previous2 = 1, 1
+    for i in range(2, n):
+        previous1, previous2 = previous2, previous1 * k + previous2
+    return previous2
+
+Complexity analyses and correctness
+
+Assuming simplistically that every arithmetic operation take O(1)
+time, this implementation takes O(n) time. However, in reality the cost of doing addition is linear in the number of bits of the two addends. Since Fn grows exponentially in n
+
+, it's representation in binary grows linearly in n and the addition in each iteration actually takes linear time as well, but this is splitting hairs for the inputs of this problem.
+Recurrence Derivation
+
+Let rn
+and Rn be the number of immature and mature rabbits in the nth
+
+generation, respectively.
+
+Fn=Rn+rn(Eq. 1)
+rn=k⋅Rn−1(Eq. 2)
+Rn=Rn−1+rn−1(Eq. 3)
+
+From Eq.1
+and Eq.3, we see that Rn=Fn−1. Substituting Eq.2 and Eq.3 into Eq.1
+
+yields
+
+Fn=Rn−1+rn−1+k⋅Rn−1(Eq. 4)
+
+Noting that
+
+Rn−1=Fn−2
+Fn−1=Rn−1+rn−1
+
+Substituting the above equations into Eq.4
+
+gives the recurrence
+
+Fn=Fn−1+k⋅Fn−2(Eq. 5)
+
+Recursion vs dynamic programming
+
+The recurrent relation can be naturally implemented as recursive function
+
+def fib(n,k=1):
+    if n == 1:
+        return 1
+    if n == 2:
+        return 1
+    return fib(n-1, k) + k * fib(n-2, k)
+
+This algorithm is correct, but its running time is much worse then O(n)
+. Why? To compute Fn, we need to compute Fn−1 and Fn−2. To compute Fn−1 we need to compute Fn−2 (again!) and Fn−3. But we also need to compute Fn−3 for each computation of Fn−2 which means that Fn−3
+
+will be computed three times. And so on.
+
+The general problem here is that we repeatedly compute things that repeatedly compute things that repeatedly compute things and so on. To fix it there is a trick called memoization. Let's just remember all the results computed so far instead of recomputing them. To do this we need some data structure to store results. In Python, dict can serve this purpose:
+
+memo = {}
+def fib(n,k=1):
+    args = (n, k)
+    if args in memo:
+        return memo[args]  # Aha! We have computed this before!
+
+    # We haven't computed this before, so we do it now
+    if n == 1:
+        ans = 1
+    elif n == 2:
+        ans = 1
+    else:
+        ans = fib(n-1, k) + k * fib(n-2, k)
+    memo[args] = ans  # don't forget to remember the result!
+    return ans
+
+

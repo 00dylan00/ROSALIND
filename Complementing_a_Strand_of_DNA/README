@@ -1,0 +1,55 @@
+Problem
+
+In DNA strings, symbols 'A' and 'T' are complements of each other, as are 'C' and 'G'.
+
+The reverse complement of a DNA string s
+is the string sc formed by reversing the symbols of s
+
+, then taking the complement of each symbol (e.g., the reverse complement of "GTCA" is "TGAC").
+
+Given: A DNA string s
+
+of length at most 1000 bp.
+
+Return: The reverse complement sc
+of s
+
+.
+Sample Dataset
+
+AAAACCCGGT
+
+Sample Output
+
+ACCGGGTTTT
+
+###################### SOLUTION ######################
+input S 
+reverse S 
+for i = 1 to length of S 
+     if S[i] = 'A' then S'[i] = 'T'
+     if S[i] = 'T' then S'[i] = 'A'
+     if S[i] = 'C' then S'[i] = 'G'
+     if S[i] = 'G' then S'[i] = 'C'
+
+print S'
+
+### EOF ###
+
+Problem summary
+
+Given a DNA strand, find its reverse complement.
+Algorithm idea
+
+This problem is straightforward. Read the DNA strand, reverse it (either 'manually' or using a built-in function of your programming language), and then loop on the reversed string changing 'A' to 'T', 'C' to 'G' and vice-versa.
+
+Complexity analysis
+
+Obviously, this simple solution has a running time of O(N).
+Why reverse complement?
+
+Why is the second strand the reverse complement of the first?
+
+The primary structure of the DNA is the strand made up of a series of nucleotides A,T,G,C. According to the Watson-Crick model the secondary structure of DNA consists of another strand bonded to the first. Adenine bonds only with Thymine and Cytosine bonds only with Guanine. Consequently, A-T, G-C are called complementary base pairs. By convention, the DNA strand is read from the 5' to the 3' end. The secondary strand however, is present in reverse and hence has to be read in reverse. Thus we replace the nucleotides on the primary strand with their complementary bases and reverse to obtain the secondary strand.
+
+You can make it as a function, because it is really useful in the following programming.
